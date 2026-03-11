@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<!-- 
+  ╔══════════════════════════════════════════════════╗
+  ║         PORTFOLIO WEBSITE - FILE UTAMA           ║
+  ║  File ini adalah kerangka/tulang punggung        ║
+  ║  website. Semua isi halaman ditulis di sini.     ║
+  ╚══════════════════════════════════════════════════╝
+  
+  Cara baca file HTML:
+  - Tag <> adalah "pembungkus" konten
+  - class="..." artinya kita kasih nama ke elemen supaya bisa di-style di CSS
+  - id="..." artinya nama unik (hanya boleh satu per halaman)
+  - data-translate="..." adalah kode yang kita buat sendiri untuk fitur terjemahan
+-->
+<html lang="id">
+<head>
+  <!-- 
+    Bagian <head> adalah pengaturan halaman yang TIDAK terlihat di layar.
+    Di sini kita atur judul tab, font, dan hubungkan ke file CSS.
+  -->
+  <meta charset="UTF-8">
+  <!-- Meta charset = pengaturan karakter, UTF-8 bisa baca huruf Indonesia (é, ñ, dll) -->
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Meta viewport = agar website tampil bagus di HP, tablet, dan laptop -->
+  
+  <title>Personal Web — Andi Muhammad Fauzan A</title>
+  <link rel="icon" type="image/png" href="bahan/logo-removebg-preview.png">
+  <link rel="apple-touch-icon" href="bahan/logo-removebg-preview.png">
+  <!-- Judul ini yang muncul di tab browser -->
+
+  <!-- Google Fonts: Font kustom supaya tulisan lebih keren dari font bawaan -->
+  <!-- Bebas Neue = font besar tegas untuk judul utama -->
+  <!-- Outfit = font bersih untuk teks biasa -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Menghubungkan file CSS kita ke HTML ini -->
+  <!-- Kalau kamu ganti nama file CSS, ubah juga di sini -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dark-mode">
+  <!--
+    <body> = semua konten yang TERLIHAT di layar
+    class="dark-mode" = website mulai dalam mode gelap (bisa diganti di script.js)
+  -->
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║     CANVAS PARTIKEL          ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <!-- Canvas adalah "kanvas digital" tempat JavaScript menggambar partikel mengambang -->
+  <!-- Jangan hapus ini, kalau dihapus partikelnya hilang! -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║       NAVIGASI (NAVBAR)      ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <nav class="navbar" id="navbar">
+    <!-- Logo / nama singkat di pojok kiri navbar -->
+    <div class="nav-logo">
+      <span class="logo-bracket">&lt;</span>
+      <span class="logo-name">Zan's<span class="logo-dot">.</span>PW</span>
+      <span class="logo-bracket">/&gt;</span>
+    </div>
+
+    <!-- Menu navigasi (daftar link ke tiap section) -->
+    <ul class="nav-links" id="navLinks">
+      <!-- href="#hero" artinya klik link ini = lompat ke section dengan id="hero" -->
+      <li><a href="#hero" class="nav-link" data-translate="nav_home">Beranda</a></li>
+      <li><a href="#about" class="nav-link" data-translate="nav_about">Tentang</a></li>
+      <li><a href="#experience" class="nav-link" data-translate="nav_exp">Pengalaman</a></li>
+      <li><a href="#certificates" class="nav-link" data-translate="nav_cert">Sertifikat</a></li>
+      <li><a href="#contact" class="nav-link" data-translate="nav_contact">Kontak</a></li>
+    </ul>
+
+    <!-- Tombol-tombol di pojok kanan navbar -->
+    <div class="nav-controls">
+      <!-- Tombol ganti bahasa (Indonesia / English) -->
+      <!-- onclick="toggleLanguage()" = panggil fungsi di script.js saat diklik -->
+      <button class="btn-lang" id="langToggle" onclick="toggleLanguage()">
+        <span id="langLabel">🇮🇩 ID</span>
+      </button>
+
+      <!-- Tombol ganti tema (gelap / terang) -->
+      <button class="btn-theme" id="themeToggle" onclick="toggleTheme()">
+        <!-- Ikon matahari dan bulan, yang aktif yang keliatan -->
+        <span class="icon-sun">☀️</span>
+        <span class="icon-moon">🌙</span>
+      </button>
+
+      <!-- Tombol hamburger untuk HP (3 garis) -->
+      <!-- onclick="toggleMobileMenu()" = buka/tutup menu di layar kecil -->
+      <button class="btn-hamburger" id="hamburger" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║       HERO SECTION           ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <!-- Section pertama yang langsung terlihat saat buka website -->
+  <section class="hero" id="hero">
+    <div class="hero-container">
+
+      <!-- Kolom kiri: foto + teks perkenalan -->
+      <div class="hero-left">
+
+        <!-- Slot foto profil - ganti src="" dengan path foto kamu -->
+        <!-- Contoh: src="foto-saya.jpg" kalau fotonya satu folder dengan index.html -->
+        <div class="hero-photo-wrapper">
+          <div class="hero-photo-ring"></div>
+          <!-- Placeholder foto (kotak abu-abu dengan ikon) -->
+          <!-- Kalau sudah punya foto, hapus div.photo-placeholder dan uncomment tag <img> di bawah -->
+          <!--
+            COIN FLIP FOTO PROFIL
+            - Hover masuk  → GIF langsung play + spin 540° → berhenti di sisi GIF
+            - Hover keluar → spin 540° → kembali ke FOTO
+
+            CARA PASANG GIF:
+            1. Hapus div.photo-back-placeholder
+            2. Uncomment tag <img> di bawahnya
+            3. Ganti "animasi-kamu.gif" dengan path GIF kamu
+          -->
+          <div class="photo-flip-scene" id="photoFlipScene">
+            <div class="photo-flip-card" id="photoFlipCard">
+
+              <!-- DEPAN: Foto profil -->
+              <div class="photo-face photo-front">
+                <img src="bahan/foto-polaroid.jpeg" alt="Foto Profil" class="hero-photo-img">
+              </div>
+
+              <!-- BELAKANG: Slot GIF -->
+              <div class="photo-face photo-back">
+                <img
+                  class="photo-back-gif"
+                  src="bahan/mahiru.gif"
+                  alt="Profile GIF"
+                  id="profileGif">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nama & status di bawah foto -->
+        <div class="hero-identity">
+          <!-- GANTI NAMA: ubah teks "Nama Kamu" dengan nama aslimu -->
+          <h1 class="hero-name">ANDI MUH FAUZAN</h1>
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            <span data-translate="hero_status">Mahasiswa Teknik Informatika</span>
+          </div>
+          <!-- Tagline singkat buat perkenalan -->
+          <p class="hero-tagline" data-translate="hero_tagline">
+            Masih belajar, tapi semangat nggak pernah berhenti! 🚀
+          </p>
+
+          <!-- Tombol CTA (Call to Action) -->
+          <div class="hero-cta">
+            <a href="#about" class="btn-primary" data-translate="hero_btn_about">Kenalan Yuk</a>
+            <a href="#contact" class="btn-secondary" data-translate="hero_btn_contact">HI</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kolom kanan: kartu foto yang bisa didrag dengan tali -->
+      <div class="hero-right">
+        <!-- 
+          KARTU TALI (ROPE CARD)
+          Ini kartu Polaroid yang bisa kamu tarik-tarik seperti ada tali di atasnya!
+          Canvas dipakai untuk menggambar tali. Kartu bisa di-drag pakai mouse/jari.
+        -->
+        <div class="rope-section" id="ropeSection">
+          <!-- Canvas untuk gambar tali - JavaScript yang handle ini -->
+          <canvas id="ropeCanvas"></canvas>
+
+          <!-- Kartu Polaroid yang bisa di-drag -->
+          <!-- 
+            CARA GANTI FOTO DI KARTU:
+            Ganti src="foto-kamu.jpg" di bawah
+          -->
+          <div class="polaroid-card" id="polaroidCard">
+            <div class="polaroid-photo">
+              <!-- Placeholder di dalam kartu Polaroid -->
+              <img src="bahan/Send me your opinion about me or your message! - Copy.png" class="polaroid-img" alt="">
+              <!--
+                Atau pakai foto asli (hapus div di atas, uncomment ini):
+                <img src="foto-kamu.jpg" alt="Foto" class="polaroid-img">
+              -->
+            </div>
+            <!-- Caption di bawah kartu Polaroid -->
+            <p class="polaroid-caption" data-translate="polaroid_caption">Ini Aku! 👋</p>
+          </div>
+        </div>
+
+        <!-- Info tambahan yang "mengambang" di sekitar kartu -->
+        <div class="floating-badge badge-1">
+          <span>🎓</span>
+          <small data-translate="badge_student">Informatika 2024</small>
+        </div>
+        <div class="floating-badge badge-2">
+          <span>💻</span>
+          <small data-translate="badge_code">HTML · CSS · JS</small>
+        </div>
+        <div class="floating-badge badge-3">
+          <span>🤖</span>
+          <small data-translate="badge_ai">AI Explorer</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panah scroll ke bawah -->
+    <div class="scroll-indicator">
+      <span data-translate="scroll_down">Scroll ke bawah</span>
+      <div class="scroll-arrow">↓</div>
+    </div>
+  </section>
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║       ABOUT SECTION          ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <section class="about" id="about">
+    <div class="container">
+      <!-- Judul section dengan garis dekorasi -->
+      <div class="section-header">
+        <span class="section-tag" data-translate="about_tag">// tentang_saya</span>
+        <h2 class="section-title" data-translate="about_title">Siapa Aku?</h2>
+      </div>
+
+      <div class="about-grid">
+        <!-- Teks deskripsi diri -->
+        <div class="about-text">
+          <p data-translate="about_p1">
+            Halo! Aku mahasiswa Teknik Informatika semester 2 yang lagi seru-serunya eksplor dunia digital. 
+            Belum jadi expert, tapi setiap hari belajar sesuatu yang baru — dan itu yang bikin aku semangat!
+          </p>
+          <p data-translate="about_p2">
+            Website ini bukan portofolio pro yang penuh klien dan projek besar. Ini lebih kayak "buku harian digital" 
+            yang nunjukkin perjalanan belajarku — dari nge-edit video, ngulik AI, sampai nyoba bikin website pertamaku.
+          </p>
+          <p data-translate="about_p3">
+            Masih banyak yang mau dipelajari, tapi yang penting mulai dulu, kan? 😄
+          </p>
+        </div>
+
+        <!-- Kartu fakta singkat -->
+        <div class="about-facts">
+          <div class="fact-card">
+            <span class="fact-icon">🏫</span>
+            <div>
+              <strong data-translate="fact_status">Status</strong>
+              <p data-translate="fact_status_val">Mahasiswa Aktif · Sem. 2</p>
+            </div>
+          </div>
+          <div class="fact-card">
+            <span class="fact-icon">📍</span>
+            <div>
+              <strong data-translate="fact_major">Jurusan</strong>
+              <p data-translate="fact_major_val">Teknik Informatika</p>
+            </div>
+          </div>
+          <div class="fact-card">
+            <span class="fact-icon">⚡</span>
+            <div>
+              <strong data-translate="fact_focus">Fokus</strong>
+              <p data-translate="fact_focus_val">Kreatif Digital & AI</p>
+            </div>
+          </div>
+          <div class="fact-card">
+            <span class="fact-icon">🎯</span>
+            <div>
+              <strong data-translate="fact_goal">Tujuan</strong>
+              <p data-translate="fact_goal_val">Jadi Freelancer Suatu Hari</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║     EXPERIENCE SECTION       ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <section class="experience" id="experience">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag" data-translate="exp_tag">// pengalaman</span>
+        <h2 class="section-title" data-translate="exp_title">Yang Udah Aku Kuasai</h2>
+        <p class="section-sub" data-translate="exp_sub">Bukan expert, tapi udah cukup tau gimana cara kerjanya 😄</p>
+      </div>
+
+      <!-- Grid kartu pengalaman -->
+      <!-- Ada 4 kartu sesuai permintaan: Video Editor, Photo Editor, AI, dan HTML/CSS/JS -->
+      <div class="exp-grid">
+
+        <!-- KARTU 1: Video Editor -->
+        <div class="exp-card" data-delay="0">
+          <div class="exp-card-inner">
+            <div class="exp-icon-wrap">
+              <span class="exp-icon">🎬</span>
+            </div>
+            <h3 class="exp-title" data-translate="exp1_title">Video Editor</h3>
+            <!-- Garis tahun pengalaman -->
+            <div class="exp-years">
+              <span class="year-badge">2020 — <span data-translate="now">sekarang</span></span>
+            </div>
+            <p class="exp-desc" data-translate="exp1_desc">
+              Udah main CapCut sejak 2020, versi mobile maupun desktop. 
+              Dari yang cuma potong-potong video, sekarang udah bisa bikin konten yang lumayan enak dilihat. 
+              Transisi, teks animasi, efek — siapa takut!
+            </p>
+            <!-- Skill tag -->
+            <div class="exp-tags">
+              <span class="tag">CapCut Mobile</span>
+              <span class="tag">CapCut Desktop</span>
+              <span class="tag">Alight Motion</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KARTU 2: Photo Editor -->
+        <div class="exp-card" data-delay="100">
+          <div class="exp-card-inner">
+            <div class="exp-icon-wrap">
+              <span class="exp-icon">🖼️</span>
+            </div>
+            <h3 class="exp-title" data-translate="exp2_title">Photo Editor</h3>
+            <div class="exp-years">
+              <span class="year-badge" data-translate="exp2_years">Beberapa Tahun</span>
+            </div>
+            <p class="exp-desc" data-translate="exp2_desc">
+              Dari Pixellab buat desain grafis, Canva buat poster & presentasi, 
+              Google Seed buat eksplorasi, sampai Photoshop Mobile buat hasil yang lebih pro. 
+              Banyak tools, makin banyak kreasi!
+            </p>
+            <div class="exp-tags">
+              <span class="tag">Pixellab</span>
+              <span class="tag">Canva</span>
+              <span class="tag">Google Seed</span>
+              <span class="tag">Photoshop Mobile</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KARTU 3: AI Enthusiast -->
+        <div class="exp-card" data-delay="200">
+          <div class="exp-card-inner">
+            <div class="exp-icon-wrap">
+              <span class="exp-icon">🤖</span>
+            </div>
+            <h3 class="exp-title" data-translate="exp3_title">AI Enthusiast</h3>
+            <div class="exp-years">
+              <span class="year-badge">2024 — <span data-translate="now">sekarang</span></span>
+            </div>
+            <p class="exp-desc" data-translate="exp3_desc">
+              Sejak 2024 aktif eksplor berbagai tools AI. Suka banget cari-cari prompt yang unik dan 
+              menarik — kadang hasilnya diluar ekspektasi banget! Masih terus eksplor sampai sekarang 
+              karena AI berkembang super cepet.
+            </p>
+            <div class="exp-tags">
+              <span class="tag">Prompt Engineering</span>
+              <span class="tag">AI Tools</span>
+              <span class="tag">Image Gen</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KARTU 4: HTML/CSS/JS -->
+        <div class="exp-card" data-delay="300">
+          <div class="exp-card-inner">
+            <div class="exp-icon-wrap">
+              <span class="exp-icon">💻</span>
+            </div>
+            <h3 class="exp-title" data-translate="exp4_title">Web Development</h3>
+            <div class="exp-years">
+              <span class="year-badge" data-translate="exp4_years">~1 Tahun Belajar</span>
+            </div>
+            <p class="exp-desc" data-translate="exp4_desc">
+              Masih dalam tahap belajar tapi udah lumayan ngerti konsep dasarnya. 
+              HTML buat struktur, CSS buat tampilan, JavaScript buat yang interaktif. 
+              Masih banyak yang belum dikuasai — termasuk JavaScript yang masih sering bikin garuk kepala 😅
+            </p>
+            <div class="exp-tags">
+              <span class="tag">HTML</span>
+              <span class="tag">CSS</span>
+              <span class="tag">JavaScript (Basic)</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║    CERTIFICATES SECTION      ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <!-- 
+    Kartu sertifikat 3D yang bisa di-flip (dibalik)!
+    Klik kartu = kartu berputar = tampil deskripsi di belakang.
+    Ada 3 slot sesuai permintaan.
+  -->
+  <section class="certificates" id="certificates">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag" data-translate="cert_tag">// sertifikat</span>
+        <h2 class="section-title" data-translate="cert_title">Sertifikat & Pencapaian</h2>
+        <p class="section-sub" data-translate="cert_sub">Klik kartunya buat lihat detailnya! 🃏</p>
+      </div>
+
+      <div class="cert-grid">
+
+        <!-- ═══ SERTIFIKAT 1 ═══ -->
+        <div class="cert-container" onclick="flipCard(this)">
+          <div class="cert-card">
+            <!-- DEPAN: foto sertifikat -->
+            <div class="cert-front">
+              <img src="bahan/sertif1.jpeg" alt="Sertifikat Seminar UNIKOM-KPI" class="cert-img">
+              <div class="cert-front-info">
+                <h3 class="cert-name" data-translate="cert1_name">Seminar Nasional UNIKOM × KPI</h3>
+                <p class="cert-issuer" data-translate="cert1_issuer">Direktorat Kemahasiswaan UNIKOM</p>
+                <span class="cert-flip-hint" data-translate="cert_flip">Klik untuk detail ↩</span>
+              </div>
+            </div>
+            <!-- BELAKANG: deskripsi -->
+            <div class="cert-back">
+              <div class="cert-back-content">
+                <span class="cert-back-icon">🏛️</span>
+                <h3 data-translate="cert1_name">Seminar Nasional UNIKOM × KPI</h3>
+                <div class="cert-date">
+                  <span>📅</span>
+                  <span data-translate="cert1_date">7 November 2025</span>
+                </div>
+                <p data-translate="cert1_desc">Peserta Seminar Nasional Kerja Sama Direktorat Kemahasiswaan UNIKOM dan Komisi Penyiaran Indonesia (KPI) Pusat dengan tema "Konten Penyiaran Vs Konten Media Baru Bagi Gen Z".</p>
+                <div class="cert-issuer-back">
+                  <span>🏢</span>
+                  <span data-translate="cert1_issuer">Direktorat Kemahasiswaan UNIKOM</span>
+                </div>
+                <span class="cert-flip-hint" data-translate="cert_back">Kembali ↩</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ SERTIFIKAT 2 ═══ -->
+        <div class="cert-container" onclick="flipCard(this)">
+          <div class="cert-card">
+            <div class="cert-front">
+              <img src="bahan/sertif2.jpeg" alt="Sertifikat ISSVT #9 Cyber Security" class="cert-img">
+              <div class="cert-front-info">
+                <h3 class="cert-name" data-translate="cert2_name">ISSVT #9 — Cyber Security</h3>
+                <p class="cert-issuer" data-translate="cert2_issuer">CV. Semiotika × IOU The Gambia</p>
+                <span class="cert-flip-hint" data-translate="cert_flip">Klik untuk detail ↩</span>
+              </div>
+            </div>
+            <div class="cert-back">
+              <div class="cert-back-content">
+                <span class="cert-back-icon">🔐</span>
+                <h3 data-translate="cert2_name">ISSVT #9 — Cyber Security</h3>
+                <div class="cert-date">
+                  <span>📅</span>
+                  <span data-translate="cert2_date">2 Oktober 2025</span>
+                </div>
+                <p data-translate="cert2_desc">Peserta Semiotika International Scientific Virtual Talk #9 bertema "Cyber Security" — kolaborasi India-Indonesia yang diselenggarakan oleh CV. Semiotika bersama International Open University, The Gambia.</p>
+                <div class="cert-issuer-back">
+                  <span>🏢</span>
+                  <span data-translate="cert2_issuer">CV. Semiotika × IOU The Gambia</span>
+                </div>
+                <span class="cert-flip-hint" data-translate="cert_back">Kembali ↩</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ SERTIFIKAT 3 ═══ -->
+        <div class="cert-container" onclick="flipCard(this)">
+          <div class="cert-card">
+            <div class="cert-front">
+              <img src="bahan/sertif3.jpeg" alt="Sertifikat ISSVT #10 AI Research" class="cert-img">
+              <div class="cert-front-info">
+                <h3 class="cert-name" data-translate="cert3_name">ISSVT #10 — AI Research</h3>
+                <p class="cert-issuer" data-translate="cert3_issuer">CV. Semiotika × Pakistan</p>
+                <span class="cert-flip-hint" data-translate="cert_flip">Klik untuk detail ↩</span>
+              </div>
+            </div>
+            <div class="cert-back">
+              <div class="cert-back-content">
+                <span class="cert-back-icon">🤖</span>
+                <h3 data-translate="cert3_name">ISSVT #10 — AI Research</h3>
+                <div class="cert-date">
+                  <span>📅</span>
+                  <span data-translate="cert3_date">14 Oktober 2025</span>
+                </div>
+                <p data-translate="cert3_desc">Peserta Semiotika International Scientific Virtual Talk #10 bertema "AI-Based Research for Student Journal Publication" — kolaborasi Indonesia-Pakistan bersama Local Government Rural Development Pakistan.</p>
+                <div class="cert-issuer-back">
+                  <span>🏢</span>
+                  <span data-translate="cert3_issuer">CV. Semiotika × Pakistan</span>
+                </div>
+                <span class="cert-flip-hint" data-translate="cert_back">Kembali ↩</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║      CONTACT SECTION         ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag" data-translate="contact_tag">// kontak</span>
+        <h2 class="section-title" data-translate="contact_title">Hubungi Aku</h2>
+        <p class="section-sub" data-translate="contact_sub">
+          Mau ngobrol, kolaborasi, atau sekadar say hi? Langsung aja! 👋
+        </p>
+      </div>
+
+      <div class="contact-grid">
+
+        <!-- Tombol Instagram -->
+        <!-- 
+          CARA GANTI LINK INSTAGRAM:
+          Ubah href="https://instagram.com/username_kamu" dengan username IG kamu
+          Ubah teks @username_kamu dengan username kamu
+        -->
+        <a href="https://instagram.com/zwithan" target="_blank" class="contact-card contact-ig">
+          <div class="contact-icon-wrap">
+            <!-- Icon Instagram (SVG custom biar lebih keren dari emoji) -->
+            <svg class="contact-svg-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" stroke-width="2"/>
+              <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="contact-info">
+            <h3>Instagram</h3>
+            <!-- GANTI: username Instagram kamu -->
+            <p class="contact-handle">@zwithan</p>
+            <span class="contact-action" data-translate="contact_follow">Lihat Profil →</span>
+          </div>
+          <div class="contact-glow contact-glow-ig"></div>
+        </a>
+
+        <!-- Tombol WhatsApp -->
+        <!-- 
+          CARA GANTI LINK WHATSAPP:
+          Format: https://wa.me/62XXXXXXXXXXXX
+          62 = kode negara Indonesia
+          Contoh nomor 0812-3456-7890 → 6281234567890
+          Jadi: href="https://wa.me/6281234567890"
+          
+          Ganti juga teks +62 xxx-xxxx-xxxx dengan nomor kamu
+        -->
+        <a href="https://wa.me/6281285750725" target="_blank" class="contact-card contact-wa">
+          <div class="contact-icon-wrap">
+            <!-- Icon WhatsApp (SVG) -->
+            <svg class="contact-svg-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.52 3.48A11.95 11.95 0 0 0 12 0C5.37 0 0 5.37 0 12c0 2.11.55 4.17 1.6 5.98L0 24l6.18-1.58C7.96 23.47 9.96 24 12 24c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.52zM12 22c-1.85 0-3.68-.5-5.28-1.44l-.38-.22-3.67.94.97-3.56-.25-.4C2.5 15.68 2 13.86 2 12 2 6.49 6.49 2 12 2s10 4.49 10 10-4.49 10-10 10zm5.47-7.4c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15s-.77.97-.94 1.17c-.17.2-.35.22-.65.07-.3-.15-1.27-.47-2.41-1.49-.89-.79-1.49-1.77-1.67-2.07-.17-.3-.02-.47.13-.62.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51H7.5c-.2 0-.52.07-.79.37s-1.04 1.02-1.04 2.48c0 1.47 1.07 2.89 1.22 3.09.15.2 2.1 3.21 5.09 4.5.71.31 1.27.49 1.7.63.72.23 1.37.2 1.88.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="contact-info">
+            <h3>WhatsApp</h3>
+            <!-- GANTI: nomor WhatsApp kamu -->
+            <p class="contact-handle">+62 812-8575-0725</p>
+            <span class="contact-action" data-translate="contact_chat">Chat Sekarang →</span>
+          </div>
+          <div class="contact-glow contact-glow-wa"></div>
+        </a>
+
+      </div>
+
+      <!-- Pesan penutup -->
+      <div class="contact-footer">
+        <p data-translate="contact_note">
+          Aku aktif di Instagram & WhatsApp. Respons biasanya dalam 1–24 jam ya! 😄
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║          FOOTER              ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p data-translate="footer_made">Dibuat dengan ❤️ + ☕ + banyak trial & error</p>
+      <!-- Tahun otomatis diisi oleh JavaScript (lihat di script.js) -->
+      <p><span id="footerYear"></span> · <span data-translate="footer_copy">Semua konten milik penulis</span></p>
+    </div>
+  </footer>
+
+  <!-- Menghubungkan file JavaScript kita -->
+  <!-- PENTING: Letaknya di bawah semua HTML supaya browser sudah "kenal" semua elemen sebelum JS jalan -->
+  <script src="script.js"></script>
+</body>
+</html>
