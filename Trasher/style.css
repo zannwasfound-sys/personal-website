@@ -1,0 +1,1322 @@
+/*
+  ╔════════════════════════════════════════════════════════╗
+  ║           STYLE.CSS — FILE TAMPILAN                    ║
+  ║                                                        ║
+  ║  File ini mengatur SEMUA tampilan visual website.      ║
+  ║  Struktur:                                             ║
+  ║  1. CSS Variables (warna & variabel utama)             ║
+  ║  2. Reset & Base Styles                                ║
+  ║  3. Particles (partikel mengambang)                    ║
+  ║  4. Navbar                                             ║
+  ║  5. Hero Section                                       ║
+  ║  6. About Section                                      ║
+  ║  7. Experience Section                                 ║
+  ║  8. Certificates Section (kartu 3D flip)               ║
+  ║  9. Contact Section                                    ║
+  ║  10. Footer                                            ║
+  ║  11. Animasi                                           ║
+  ║  12. Responsive (tampilan HP)                          ║
+  ╚════════════════════════════════════════════════════════╝
+*/
+
+/* ═══════════════════════════════════════════════════════════
+   1. CSS VARIABLES (VARIABEL WARNA)
+   Cara kerja: daripada nulis warna di ratusan tempat,
+   kita simpan di sini terus panggil dengan var(--nama).
+   Mau ganti warna? Cukup ubah di sini, otomatis berubah semua!
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  /* -- MODE GELAP (default) -- */
+  --bg: #0a0a0a;           /* Latar belakang utama (hitam pekat) */
+  --bg-2: #111111;          /* Latar belakang sekunder (hitam agak terang) */
+  --bg-3: #1a1a1a;          /* Latar belakang tersier (untuk kartu) */
+  --text: #f5f5f5;          /* Warna teks utama (putih) */
+  --text-2: #a0a0a0;        /* Warna teks sekunder (abu-abu) */
+  --text-3: #606060;        /* Warna teks tersier (abu-abu gelap) */
+  --border: rgba(255,255,255,0.08);  /* Garis batas (transparan) */
+  --border-2: rgba(255,255,255,0.15); /* Garis batas lebih terang */
+  --accent: #ffffff;        /* Warna aksen (putih) */
+  --accent-dim: rgba(255,255,255,0.1); /* Aksen transparan */
+  --glass: rgba(255,255,255,0.04);    /* Efek kaca / glassmorphism */
+  --glass-border: rgba(255,255,255,0.1); /* Border kaca */
+  --shadow: rgba(0,0,0,0.5);          /* Bayangan */
+  --particle-color: 255, 255, 255;    /* Warna partikel (RGB format) */
+  --glow: rgba(255,255,255,0.15);     /* Efek glow/cahaya */
+  
+  /* -- WARNA KONTAK -- */
+  --ig-glow: rgba(225, 48, 108, 0.2);  /* Merah muda Instagram */
+  --wa-glow: rgba(37, 211, 102, 0.2);  /* Hijau WhatsApp */
+  
+  /* -- UKURAN & JARAK -- */
+  --nav-height: 72px;        /* Tinggi navbar */
+  --radius: 12px;            /* Sudut membulat kartu */
+  --radius-lg: 20px;         /* Sudut membulat besar */
+  --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); /* Kecepatan animasi */
+  
+  /* -- FONT -- */
+  --font-display: 'Bebas Neue', cursive;  /* Font judul besar */
+  --font-body: 'Outfit', sans-serif;      /* Font teks biasa */
+}
+
+/* Mode terang: menimpa variabel di atas kalau class "light-mode" aktif */
+/* JavaScript yang akan tambah/hapus class ini di <body> */
+.light-mode {
+  --bg: #f8f8f8;
+  --bg-2: #ffffff;
+  --bg-3: #efefef;
+  --text: #111111;
+  --text-2: #555555;
+  --text-3: #999999;
+  --border: rgba(0,0,0,0.08);
+  --border-2: rgba(0,0,0,0.15);
+  --accent: #111111;
+  --accent-dim: rgba(0,0,0,0.07);
+  --glass: rgba(0,0,0,0.03);
+  --glass-border: rgba(0,0,0,0.1);
+  --shadow: rgba(0,0,0,0.15);
+  --particle-color: 0, 0, 0;  /* Partikel HITAM di mode terang — lebih kontras & keren */
+  --glow: rgba(0,0,0,0.08);
+  --ig-glow: rgba(225, 48, 108, 0.12);
+  --wa-glow: rgba(37, 211, 102, 0.12);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   2. RESET & BASE STYLES
+   "Reset" = menghapus style bawaan browser yang beda-beda
+   supaya tampilan konsisten di semua browser.
+   ═══════════════════════════════════════════════════════════ */
+*, *::before, *::after {
+  /* box-sizing: border-box = padding tidak nambah ukuran elemen */
+  box-sizing: border-box;
+  /* Hapus margin & padding bawaan browser */
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* scroll-behavior: smooth = scroll halus saat klik link */
+  scroll-behavior: smooth;
+  /* Offset supaya navbar tidak nutup judul section saat di-scroll */
+  scroll-padding-top: var(--nav-height);
+}
+
+body {
+  font-family: var(--font-body);    /* Font badan teks */
+  background-color: var(--bg);     /* Warna latar belakang */
+  color: var(--text);              /* Warna teks */
+  overflow-x: hidden;              /* Sembunyikan scroll horizontal */
+  /* Transisi smooth saat ganti tema */
+  transition: background-color 0.4s ease, color 0.4s ease;
+  line-height: 1.6;                /* Jarak antar baris */
+}
+
+/* Teks yang dipilih (selection) */
+::selection {
+  background: rgba(255,255,255,0.2);
+  color: var(--text);
+}
+
+/* Scrollbar kustom supaya lebih keren */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+
+/* Container pembungkus konten (agar tidak terlalu lebar di layar besar) */
+.container {
+  max-width: 1100px;     /* Lebar maksimum */
+  margin: 0 auto;        /* Tengahkan secara horizontal */
+  padding: 0 24px;       /* Jarak kiri-kanan */
+}
+
+/* Link (a tag) tidak punya garis bawah bawaan */
+a { text-decoration: none; color: inherit; }
+
+/* Gambar tidak overflow dari container-nya */
+img { max-width: 100%; display: block; }
+
+/* Section padding atas-bawah */
+section { padding: 96px 0; }
+
+/* ═══════════════════════════════════════════════════════════
+   3. CANVAS PARTIKEL
+   Canvas ini ada di belakang semua konten.
+   position: fixed = tidak ikut scroll, selalu di layar.
+   pointer-events: none = klik tidak tertangkap di sini (tembus ke bawah).
+   ═══════════════════════════════════════════════════════════ */
+#particleCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;              /* Di belakang semua elemen */
+  pointer-events: none;   /* Klik menembus ke elemen di bawahnya */
+}
+
+/* Semua section perlu z-index agar tampil di atas canvas */
+nav, section, footer { position: relative; z-index: 1; }
+
+/* ═══════════════════════════════════════════════════════════
+   4. NAVBAR
+   ═══════════════════════════════════════════════════════════ */
+.navbar {
+  position: fixed;         /* Mengambang di atas, tidak ikut scroll */
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  /* Efek kaca (glassmorphism) */
+  background: var(--glass);
+  backdrop-filter: blur(20px);        /* Efek buram di belakang */
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  z-index: 1000;           /* Di atas semua elemen */
+  transition: var(--transition);
+}
+
+/* Kelas tambahan saat di-scroll — JS yang tambahkan ini */
+.navbar.scrolled {
+  background: rgba(10,10,10,0.9);
+  box-shadow: 0 4px 30px var(--shadow);
+}
+.light-mode .navbar.scrolled { background: rgba(248,248,248,0.9); }
+
+/* Logo di pojok kiri navbar */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+.logo-bracket { color: var(--text-3); font-size: 0.9rem; }
+.logo-name { color: var(--text); }
+.logo-dot { color: var(--text-2); }
+
+/* Daftar menu navigasi */
+.nav-links {
+  display: flex;
+  list-style: none;         /* Hapus bullet point */
+  gap: 6px;
+}
+
+/* Tiap link navigasi */
+.nav-link {
+  display: block;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-2);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.nav-link:hover { color: var(--text); background: var(--accent-dim); }
+
+/* Animasi ripple saat klik nav link */
+/* JavaScript yang tambah dan hapus class ini */
+.nav-link.clicked {
+  animation: navRipple 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes navRipple {
+  0%   { transform: scale(1); background: var(--accent-dim); }
+  40%  { transform: scale(0.93); background: var(--border-2); color: var(--accent); }
+  100% { transform: scale(1); background: transparent; }
+}
+
+/* Link aktif (section yang sedang terlihat) */
+.nav-link.active { color: var(--text); }
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Tombol bahasa */
+.btn-lang {
+  background: var(--glass);
+  border: 1px solid var(--border-2);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-body);
+}
+.btn-lang:hover { background: var(--accent-dim); transform: scale(1.05); }
+
+/* Tombol tema gelap/terang */
+.btn-theme {
+  background: var(--glass);
+  border: 1px solid var(--border-2);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 1rem;
+}
+.btn-theme:hover { background: var(--accent-dim); transform: scale(1.05); }
+
+/* Kontrol tampilan ikon matahari/bulan berdasarkan mode */
+/* Di dark mode: bulan terlihat, matahari tidak */
+.dark-mode .icon-sun { display: none; }
+.dark-mode .icon-moon { display: block; }
+/* Di light mode: matahari terlihat, bulan tidak */
+.light-mode .icon-sun { display: block; }
+.light-mode .icon-moon { display: none; }
+
+/* Nav controls wrapper */
+.nav-controls { display: flex; align-items: center; gap: 8px; }
+
+/* Tombol hamburger (menu HP) */
+.btn-hamburger {
+  display: none;           /* Tersembunyi di desktop */
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+.btn-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+/* Animasi hamburger jadi X saat diklik */
+.btn-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.btn-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.btn-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ═══════════════════════════════════════════════════════════
+   5. HERO SECTION
+   Section pertama, paling atas.
+   ═══════════════════════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;       /* Tinggi minimal seluruh layar */
+  padding-top: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 24px;
+  display: grid;
+  /* Dua kolom: kiri lebih lebar */
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
+}
+
+/* ── Foto Profil — Coin Flip + GIF ── */
+.hero-photo-wrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 24px;
+}
+
+.hero-photo-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px dashed var(--border-2);
+  animation: spinRing 12s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+@keyframes spinRing {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.photo-flip-scene {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  perspective: 600px;
+  z-index: 1;
+}
+
+.photo-flip-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  border-radius: 50%;
+  will-change: transform;
+  cursor: pointer;
+}
+
+.photo-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  border: 2px solid var(--border-2);
+}
+
+.photo-front { background: var(--bg-3); }
+
+.photo-back {
+  background: var(--bg-2);
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* GIF mengisi penuh lingkaran */
+.photo-back-gif {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+/* Placeholder sebelum GIF dipasang */
+.photo-back-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+.photo-back-icon  { font-size: 2rem; }
+.photo-back-label {
+  font-size: 0.7rem;
+  color: var(--text-3);
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+.hero-photo-img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Teks nama & identitas */
+.hero-identity { text-align: center; }
+
+.hero-name {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem); /* Ukuran responsif */
+  letter-spacing: 0.05em;
+  color: var(--text);
+  margin-bottom: 12px;
+  /* Animasi masuk dari bawah saat load */
+  animation: fadeInUp 0.8s ease both;
+}
+
+/* Badge "Mahasiswa Teknik Informatika · Semester 2" */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 0.82rem;
+  color: var(--text-2);
+  margin-bottom: 16px;
+  animation: fadeInUp 0.8s 0.1s ease both;
+}
+
+/* Titik hijau berkedip (status online) */
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.8); }
+}
+
+.hero-tagline {
+  font-size: 1rem;
+  color: var(--text-2);
+  margin-bottom: 28px;
+  animation: fadeInUp 0.8s 0.2s ease both;
+}
+
+/* Tombol CTA (ajakan bertindak) */
+.hero-cta {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.8s 0.3s ease both;
+}
+
+/* Tombol utama (gelap/solid) */
+.btn-primary {
+  padding: 12px 28px;
+  background: var(--text);
+  color: var(--bg);
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--shadow);
+}
+
+/* Tombol sekunder (outline/transparan) */
+.btn-secondary {
+  padding: 12px 28px;
+  background: transparent;
+  color: var(--text);
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 1px solid var(--border-2);
+  transition: var(--transition);
+}
+.btn-secondary:hover {
+  background: var(--accent-dim);
+  transform: translateY(-2px);
+}
+
+/* ── Bagian Kanan Hero (Rope Card) ── */
+.hero-right {
+  position: relative;
+  height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Area kanvas tali + kartu */
+.rope-section {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Canvas tali (transparan, di atas elemen lain) */
+#ropeCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;   /* Klik tembus ke kartu di bawahnya */
+  z-index: 2;
+}
+
+/* Kartu Polaroid yang bisa di-drag */
+.polaroid-card {
+  position: absolute;
+  /* Posisi awal — JavaScript akan update left & top ini */
+  /* transform diatur oleh JS (rotate + scale dinamis) */
+  top: 80px;
+  left: 50%;
+
+  width: 180px;
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+  padding: 12px 12px 36px;
+  box-shadow: 0 12px 40px var(--shadow);
+  cursor: grab;
+  z-index: 3;
+  user-select: none;
+  /* 
+    Transform-origin center top supaya rotasi terasa natural
+    seolah kartu tergantung dari ujung tali di atas
+  */
+  transform-origin: center top;
+}
+.polaroid-card:active { cursor: grabbing; }
+
+/* Saat sedang di-drag: shadow lebih dramatis (efek terangkat) */
+/* Scale dan rotate diatur oleh JS — jadi tidak ada di sini */
+.polaroid-card.dragging {
+  cursor: grabbing;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+}
+
+/* Area foto di dalam kartu Polaroid */
+.polaroid-photo {
+  width: 100%;
+  aspect-ratio: 1;         /* Kotak sempurna */
+  background: var(--bg-3);
+  border-radius: 2px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.polaroid-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-3);
+  font-size: 0.7rem;
+}
+.polaroid-placeholder span { font-size: 2rem; }
+.polaroid-img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Caption di bawah foto Polaroid */
+.polaroid-caption {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-2);
+  font-family: var(--font-body);
+}
+
+/* Badge mengambang di sekitar kartu */
+.floating-badge {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 100px;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  animation: float 3s ease-in-out infinite;
+}
+.floating-badge small { color: var(--text-2); }
+
+/* Posisi masing-masing badge */
+.badge-1 { top: 20px; left: -20px; animation-delay: 0s; }
+.badge-2 { bottom: 60px; left: -40px; animation-delay: 1s; }
+.badge-3 { top: 40px; right: -20px; animation-delay: 2s; }
+
+/* Animasi mengambang naik-turun */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+/* Indikator scroll ke bawah */
+.scroll-indicator {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-3);
+  font-size: 0.78rem;
+  animation: fadeInUp 1s 0.6s ease both;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.scroll-arrow {
+  animation: bounce 2s ease-in-out infinite;
+  font-size: 1.2rem;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(8px); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HEADER TIAP SECTION (REUSABLE)
+   Dipakai di about, experience, dll.
+   ═══════════════════════════════════════════════════════════ */
+.section-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+/* Label kecil di atas judul section (seperti komentar kode) */
+.section-tag {
+  display: inline-block;
+  font-family: 'Courier New', monospace;
+  font-size: 0.82rem;
+  color: var(--text-3);
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+
+/* Judul utama tiap section */
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: 0.04em;
+  margin-bottom: 12px;
+}
+
+/* Subjudul kecil di bawah judul */
+.section-sub {
+  font-size: 0.95rem;
+  color: var(--text-2);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   6. ABOUT SECTION
+   ═══════════════════════════════════════════════════════════ */
+.about { background: var(--bg); }
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.about-text p {
+  color: var(--text-2);
+  margin-bottom: 16px;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+.about-text p:last-child { margin-bottom: 0; }
+
+/* Grid kartu fakta */
+.about-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Tiap kartu fakta */
+.fact-card {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: var(--transition);
+}
+.fact-card:hover {
+  border-color: var(--border-2);
+  transform: translateY(-2px);
+  background: var(--bg-2);
+}
+.fact-icon { font-size: 1.4rem; }
+.fact-card strong {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 2px;
+}
+.fact-card p { font-size: 0.85rem; color: var(--text-2); }
+
+/* ═══════════════════════════════════════════════════════════
+   7. EXPERIENCE SECTION
+   ═══════════════════════════════════════════════════════════ */
+.experience { background: var(--bg-2); }
+
+/* Grid 4 kartu pengalaman (2 kolom di desktop) */
+.exp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+/* Kartu pengalaman */
+.exp-card {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: var(--transition);
+  /* Efek muncul dari bawah saat pertama kali terlihat */
+  /* JavaScript yang memicu animasi ini dengan IntersectionObserver */
+  opacity: 0;
+  transform: translateY(30px);
+}
+.exp-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.exp-card:hover {
+  border-color: var(--border-2);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px var(--shadow);
+}
+
+.exp-card-inner { padding: 28px; }
+
+/* Lingkaran ikon di kartu pengalaman */
+.exp-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--border-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  transition: var(--transition);
+}
+.exp-card:hover .exp-icon-wrap {
+  background: var(--accent-dim);
+  transform: rotate(5deg) scale(1.05);
+}
+.exp-icon { font-size: 1.6rem; }
+
+.exp-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* Badge tahun pengalaman */
+.exp-years { margin-bottom: 12px; }
+.year-badge {
+  display: inline-block;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  color: var(--text-3);
+  font-family: 'Courier New', monospace;
+}
+
+.exp-desc {
+  font-size: 0.88rem;
+  color: var(--text-2);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+/* Tag skill kecil */
+.exp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  background: var(--accent-dim);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  color: var(--text-2);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   8. CERTIFICATES SECTION — KARTU 3D FLIP
+   
+   Cara kerja flip 3D:
+   - .cert-container punya perspective (kedalaman 3D)
+   - .cert-card berputar 180 derajat saat class "flipped" aktif
+   - .cert-front dan .cert-back saling berhadapan
+   - backface-visibility: hidden = sisi yang menghadap belakang tidak terlihat
+   ═══════════════════════════════════════════════════════════ */
+.certificates { background: var(--bg); }
+
+/* Grid 3 kartu sertifikat */
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* Pembungkus dengan perspektif 3D */
+.cert-container {
+  perspective: 1000px;     /* Jarak "mata" ke kartu — makin kecil makin dramatis */
+  cursor: pointer;
+  height: 400px;
+  /* Penting: overflow hidden supaya saat flip tidak ada bagian kartu yang muncul keluar */
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+
+/* Kartu yang bisa berputar */
+.cert-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  /* Preserve-3d = anak elemen juga ikut 3D */
+  transform-style: preserve-3d;
+  /* Transisi putaran 3D */
+  transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+  border-radius: var(--radius-lg);
+}
+
+/* Saat class "flipped" ditambahkan (oleh JavaScript), kartu berputar 180 derajat */
+.cert-container.flipped .cert-card {
+  transform: rotateY(180deg);
+}
+
+/* Style bersama untuk depan & belakang kartu */
+.cert-front, .cert-back {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  /* Sembunyikan sisi yang menghadap ke belakang */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-3);
+  transition: border-color 0.3s ease;
+}
+.cert-container:hover .cert-front,
+.cert-container:hover .cert-back {
+  border-color: var(--border-2);
+}
+
+/* ─ Depan Kartu ─ */
+.cert-front {
+  display: flex;
+  flex-direction: column;
+  height: 100%;              /* Pastikan mengisi penuh tinggi kartu */
+}
+
+/* Placeholder foto sertifikat */
+.cert-img-placeholder {
+  /*
+    Ganti flex:1 ke height tetap!
+    Sebelumnya flex:1 artinya "ambil semua sisa ruang" —
+    masalahnya sisa ruang bergantung pada seberapa besar
+    cert-front-info, jadi tidak stabil.
+    Dengan height tetap, bagian bawah (nama + tombol) selalu
+    punya ruang yang sama tidak peduli teksnya sepanjang apapun.
+  */
+  flex-shrink: 0;            /* Tidak boleh menyusut */
+  height: 210px;             /* Tinggi foto tetap */
+  background: var(--bg-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.cert-placeholder-icon { font-size: 2.5rem; }
+.cert-placeholder-text {
+  font-size: 0.8rem;
+  color: var(--text-3);
+}
+.cert-size-hint { font-size: 0.7rem; color: var(--text-3); }
+
+/* Foto sertifikat asli (langsung di dalam cert-front tanpa wrapper) */
+.cert-img {
+  /*
+    FIX UTAMA:
+    Gambar ini adalah flex child langsung dari .cert-front (display:flex, column).
+    Tanpa flex: 0 0 210px, gambar tidak punya tinggi yang jelas → layout rusak.
+    flex: 0 0 210px artinya: tidak boleh tumbuh, tidak boleh menyusut, tingginya 210px.
+  */
+  flex: 0 0 210px;           /* Tinggi tetap 210px, tidak boleh berubah */
+  width: 100%;               /* Lebar penuh kartu */
+  object-fit: cover;         /* Foto tidak distorsi, dipotong kalau perlu */
+  object-position: center;   /* Fokus ke tengah foto */
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0; /* Sudut atas membulat */
+  display: block;
+}
+
+/* Nama & tombol flip di bawah gambar */
+.cert-front-info {
+  flex: 1;                   /* Ambil sisa ruang yang tersedia */
+  padding: 14px 16px 12px;
+  text-align: center;
+  display: flex;             /* Pakai flex supaya bisa atur posisi vertikal */
+  flex-direction: column;
+  justify-content: space-between; /* Nama di atas, tombol di bawah — selalu! */
+  overflow: hidden;          /* Jangan sampai meluber keluar kartu */
+  min-height: 0;             /* Penting untuk flex child supaya tidak overflow */
+}
+
+/* Wrapper untuk nama + lembaga supaya bisa dibatasi bersama */
+.cert-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  /* Potong teks panjang dengan "..." supaya tidak mendorong tombol */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;     /* Maksimal 2 baris */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cert-issuer {
+  font-size: 0.78rem;
+  color: var(--text-2);
+  margin-bottom: 0;          /* Hapus margin bawah, diganti gap dari flex */
+  /* Potong nama lembaga panjang dengan "..." di baris ke-2 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;     /* Maksimal 2 baris */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cert-flip-hint {
+  font-size: 0.72rem;
+  color: var(--text-3);
+  font-style: italic;
+  flex-shrink: 0;            /* Tombol ini TIDAK BOLEH menyusut/hilang */
+  padding-top: 8px;          /* Jarak dari teks di atasnya */
+  border-top: 1px solid var(--border); /* Garis pemisah supaya lebih jelas */
+  margin-top: 8px;
+}
+
+/* ─ Belakang Kartu ─ */
+.cert-back {
+  /* Diputar 180 derajat dari awal = mengarah ke belakang saat normal */
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(135deg, var(--bg-2), var(--bg-3));
+}
+
+.cert-back-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.cert-back-icon { font-size: 2rem; }
+.cert-back-content h3 { font-size: 1rem; font-weight: 700; }
+.cert-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-2);
+}
+.cert-back-content p {
+  font-size: 0.82rem;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+.cert-issuer-back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-3);
+  padding: 6px 12px;
+  background: var(--glass);
+  border-radius: 100px;
+  border: 1px solid var(--border);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   9. CONTACT SECTION
+   ═══════════════════════════════════════════════════════════ */
+.contact { background: var(--bg-2); }
+
+/* Grid 2 kartu kontak (Instagram & WhatsApp) */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 600px;
+  margin: 0 auto 32px;
+}
+
+/* Kartu kontak (Instagram & WhatsApp) */
+.contact-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  overflow: hidden;
+  transition: var(--transition);
+}
+.contact-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--border-2);
+  box-shadow: 0 16px 48px var(--shadow);
+}
+
+/* Ikon SVG di kartu kontak */
+.contact-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--border-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+.contact-card:hover .contact-icon-wrap { transform: scale(1.1) rotate(-5deg); }
+
+.contact-svg-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--text);
+}
+
+.contact-info { flex: 1; }
+.contact-info h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+.contact-handle { font-size: 0.82rem; color: var(--text-2); margin-bottom: 6px; }
+.contact-action {
+  font-size: 0.78rem;
+  color: var(--text-3);
+  transition: color 0.2s;
+}
+.contact-card:hover .contact-action { color: var(--text-2); }
+
+/* Efek glow berwarna saat hover */
+.contact-glow {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.contact-card:hover .contact-glow { opacity: 1; }
+.contact-glow-ig { background: radial-gradient(circle, var(--ig-glow), transparent); }
+.contact-glow-wa { background: radial-gradient(circle, var(--wa-glow), transparent); }
+
+/* Catatan kecil di bawah grid kontak */
+.contact-footer {
+  text-align: center;
+  color: var(--text-3);
+  font-size: 0.85rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   10. FOOTER
+   ═══════════════════════════════════════════════════════════ */
+.footer {
+  padding: 32px 24px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  background: var(--bg);
+}
+.footer-content p {
+  font-size: 0.82rem;
+  color: var(--text-3);
+  margin-bottom: 4px;
+}
+.footer-content p:last-child { margin-bottom: 0; }
+
+/* ═══════════════════════════════════════════════════════════
+   11. ANIMASI GLOBAL
+   ═══════════════════════════════════════════════════════════ */
+
+/* Animasi muncul dari bawah */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animasi muncul langsung */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Animasi section terlihat saat di-scroll */
+/* JavaScript pakai IntersectionObserver untuk tambah class ini */
+.section-header,
+.about-text p,
+.fact-card,
+.cert-container,
+.contact-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.section-header.visible,
+.about-text p.visible,
+.fact-card.visible,
+.cert-container.visible,
+.contact-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   12. RESPONSIVE DESIGN (TAMPILAN HP)
+   @media = "kalau lebar layar di bawah X px, pakai style ini"
+   ═══════════════════════════════════════════════════════════ */
+
+/* Tablet (max 1024px) */
+@media (max-width: 1024px) {
+  .cert-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* Kartu ketiga di tablet → tengahkan karena sendirian di baris ke-2 */
+  .cert-container:last-child {
+    grid-column: 1 / -1;
+    max-width: 340px;
+    margin: 0 auto;
+    height: 400px;
+  }
+  .exp-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* HP (max 768px) */
+@media (max-width: 768px) {
+  /* Sembunyikan menu di HP */
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 12px;
+    gap: 4px;
+  }
+  /* Tampilkan menu saat class "open" aktif (dari JS) */
+  .nav-links.open { display: flex; }
+  
+  /* Tampilkan tombol hamburger */
+  .btn-hamburger { display: flex; }
+  
+  /* Hero jadi 1 kolom */
+  .hero-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 40px;
+    padding: 40px 24px;
+  }
+  
+  /* Kartu tali lebih kecil di HP */
+  .hero-right { height: 320px; }
+  .polaroid-card { width: 140px; }
+  
+  /* Badge mengambang sesuaikan posisi */
+  .badge-1 { top: 10px; left: 0; }
+  .badge-2 { bottom: 20px; left: -10px; }
+  .badge-3 { top: 30px; right: 0; }
+  
+  /* About 1 kolom */
+  .about-grid { grid-template-columns: 1fr; }
+  
+  /* Experience 1 kolom */
+  .exp-grid { grid-template-columns: 1fr; }
+  
+  /* Sertifikat 1 kolom — FULL RESET semua override dari tablet */
+  .cert-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* Reset override tablet + tinggi lebih besar supaya area teks lega */
+  .cert-container,
+  .cert-container:last-child {
+    grid-column: auto !important;
+    max-width: 100% !important;
+    width: 100%;
+    margin: 0;
+    /*
+      Foto = 210px (tidak berubah).
+      Sisa untuk area teks = total - 210px.
+      460px → sisa 250px untuk nama + lembaga + tombol = cukup lega!
+    */
+    height: 460px;
+    min-height: 460px;
+  }
+
+  /* Di mobile: lepas batas 2-baris supaya nama & lembaga tampil PENUH */
+  /* Tidak perlu potong dengan "..." karena areanya sekarang lebih luas */
+  .cert-name {
+    -webkit-line-clamp: unset;   /* Hapus batas baris */
+    display: block;              /* Kembali ke display normal (bukan -webkit-box) */
+    overflow: visible;           /* Teks tidak terpotong */
+    font-size: 1rem;             /* Sedikit lebih besar di mobile */
+    margin-bottom: 6px;
+  }
+
+  .cert-issuer {
+    -webkit-line-clamp: unset;
+    display: block;
+    overflow: visible;
+    font-size: 0.82rem;          /* Sedikit lebih besar, lebih mudah dibaca */
+    line-height: 1.5;
+  }
+
+  /* Tombol flip lebih terlihat di mobile */
+  .cert-flip-hint {
+    font-size: 0.78rem;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+
+  /* Area info dapat lebih banyak padding supaya tidak mepet */
+  .cert-front-info {
+    padding: 16px 18px 14px;
+  }
+  
+  /* Kontak 1 kolom */
+  .contact-grid { grid-template-columns: 1fr; }
+  
+  /* Padding section lebih kecil */
+  section { padding: 64px 0; }
+  
+  /* Navbar padding */
+  .navbar { padding: 0 20px; }
+}
+
+/* HP kecil (max 480px) */
+@media (max-width: 480px) {
+  .hero-name { font-size: 2rem; }
+  .hero-cta { flex-direction: column; align-items: center; }
+  .about-facts { grid-template-columns: 1fr; }
+  .hero-photo-wrapper { width: 160px; height: 160px; }
+  .photo-flip-scene { width: 160px; height: 160px; }
+  .hero-photo-img { width: 160px; height: 160px; }
+}
